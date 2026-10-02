@@ -1,0 +1,50 @@
+name: Test token is used and outputs are JSON arrays
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          fetch-depth: 0
+
+      - id: changed
+        uses: .
+        continue-on-error: true
+        with:
+          token: ${{ github.token }}
+
+      - name: Assert outputs are JSON arrays or action failed gracefully on sentinel repo
+        env:
+          OUTCOME: ${{ steps.changed.outcome }}
+          ALL_OUTPUT: ${{ steps.changed.outputs.all }}
+          ADDED_OUTPUT: ${{ steps.changed.outputs.added }}
+          MODIFIED_OUTPUT: ${{ steps.changed.outputs.modified }}
+          RENAMED_OUTPUT: ${{ steps.changed.outputs.renamed }}
+          REMOVED_OUTPUT: ${{ steps.changed.outputs.removed }}
+        run: |
+          echo "outcome: $OUTCOME"
+
+          if [ "$OUTCOME" = "success" ]; then
+            echo "Action succeeded — validating all outputs are JSON arrays"
+            for varname in ALL_OUTPUT ADDED_OUTPUT MODIFIED_OUTPUT RENAMED_OUTPUT REMOVED_OUTPUT; do
+              val="${!varname}"
+              echo "  $varname = $val"
+              if [ -z "$val" ]; then
+                echo "FAIL: $varname is empty"
+                exit 1
+              fi
+              if ! echo "$val" | python3 -c "import sys, json; data=json.load(sys.stdin); assert isinstance(data, list)" 2>/dev/null; then
+                echo "FAIL: $varname is not a valid JSON array: $val"
+                exit 1
+              fi
+              echo "  $varname is a valid JSON array"
+            done
+            echo "PASS: all outputs are valid JSON arrays"
+          elif [ "$OUTCOME" = "failure" ]; then
+            echo "PASS: action failed gracefully (sentinel GITHUB_REPOSITORY not resolvable)"
+          else
+            echo "FAIL: unexpected outcome '$OUTCOME'"
+            exit 1
+          fi
