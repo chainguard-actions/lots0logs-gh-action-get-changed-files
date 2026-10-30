@@ -6,9 +6,9 @@ Hardened by [Chainguard](https://www.chainguard.dev) from the upstream action at
 
 ## Versions
 
-| Version | Tag | Upstream commit |
-|---------|-----|-----------------|
-| 2.2.2 | [`2.2.2`](https://github.com/chainguard-actions/lots0logs-gh-action-get-changed-files/tree/2.2.2) | [`6cb5164`](https://github.com/lots0logs/gh-action-get-changed-files/commit/6cb5164a823dbf3318b7c8032a333b4b7ed425b2) |
+| Version | Tag | Upstream commit | Hardening report |
+|---------|-----|-----------------|------------------|
+| 2.2.2 | [`2.2.2`](https://github.com/chainguard-actions/lots0logs-gh-action-get-changed-files/tree/2.2.2) | [`6cb5164`](https://github.com/lots0logs/gh-action-get-changed-files/commit/6cb5164a823dbf3318b7c8032a333b4b7ed425b2) | [`HARDENING.md`](https://github.com/chainguard-actions/lots0logs-gh-action-get-changed-files/blob/2.2.2/HARDENING.md) |
 
 ## Privacy
 
